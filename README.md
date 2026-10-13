@@ -45,11 +45,13 @@ The program creates `books.csv` containing the scraped records.
 The scraper follows the website's Next-page link and stops after two pages.
 
 ## Responsible Scraping
-The target website's robots.txt endpoint returned HTTP 404 when checked. A missing robots.txt file does not, by itself, establish permission to scrape. The current scraper stops when the file is missing or cannot be retrieved. The scraper also uses a two-second delay between catalogue page requests when execution is permitted.
+The target website's robots.txt endpoint returned HTTP 404 when checked. A missing robots.txt file does not, by itself, establish permission to scrape. This project uses Books to Scrape as a practice website for learning web scraping. The scraper uses a custom User-Agent and a two-second delay between catalogue page requests to reduce request frequency.
 
 ## Project Files
 - `scraper.py` — Scraping logic
-- `books.csv` — Scraped output
+- `books.csv` — CSV output containing 40 book records with four fields: title, price, rating, and URL
+- `website.png` — Screenshot of the target website
+- `output.png` — Screenshot of the scraped CSV output
 
 ## Learning Outcomes
 Practiced HTTP requests, HTML parsing, pagination, exception handling, missing-field handling, and CSV file generation.

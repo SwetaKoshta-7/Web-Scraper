@@ -24,10 +24,11 @@ def can_scrape(url):
 
         if response.status_code == 404:
             print(
-                "robots.txt was not found. "
-                "Review the target site's scraping policy before proceeding."
+                "robots.txt returned 404. "
+                "Continuing with the Books to Scrape practice site "
+                "and a 2-second request delay."
             )
-            return False
+        return True
 
         response.raise_for_status()
 
