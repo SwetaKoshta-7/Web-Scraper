@@ -45,7 +45,7 @@ The program creates `books.csv` containing the scraped records.
 The scraper follows the website's Next-page link and stops after two pages.
 
 ## Responsible Scraping
-The website's `robots.txt` endpoint returned HTTP 404 when checked manually. This does not establish permission by itself. The scraper uses a conservative two-second delay between page requests and is limited to two pages.
+The target website's robots.txt endpoint returned HTTP 404 when checked. A missing robots.txt file does not, by itself, establish permission to scrape. The current scraper stops when the file is missing or cannot be retrieved. The scraper also uses a two-second delay between catalogue page requests when execution is permitted.
 
 ## Project Files
 - `scraper.py` — Scraping logic

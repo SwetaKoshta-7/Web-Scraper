@@ -3,6 +3,7 @@ import time
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
+from urllib.robotparser import RobotFileParser
 
 BASE_URL = "https://books.toscrape.com/"
 OUTPUT_FILE = "books.csv"
@@ -12,6 +13,41 @@ session = requests.Session()
 session.headers.update({
     "User-Agent": "WeInternEducationalScraper/1.0"
 })
+
+
+def can_scrape(url):
+    """Check robots.txt rules before scraping."""
+    robots_url = urljoin(url, "/robots.txt")
+
+    try:
+        response = session.get(robots_url, timeout=15)
+
+        if response.status_code == 404:
+            print(
+                "robots.txt was not found. "
+                "Review the target site's scraping policy before proceeding."
+            )
+            return False
+
+        response.raise_for_status()
+
+        parser = RobotFileParser()
+        parser.parse(response.text.splitlines())
+
+        allowed = parser.can_fetch(
+            session.headers["User-Agent"],
+            url
+        )
+
+        if not allowed:
+            print(f"Robots.txt does not permit scraping: {url}")
+
+        return allowed
+
+    except requests.RequestException as error:
+        print(f"Could not verify robots.txt: {error}")
+        return False
+
 
 def fetch_page(url):
     """Fetch a webpage and return its HTML content."""
@@ -116,9 +152,12 @@ def scrape_books():
     return all_books
 
 if __name__ == "__main__":
-    books = scrape_books()
+    if can_scrape(BASE_URL):
+        books = scrape_books()
 
-    if books:
-        save_to_csv(books, OUTPUT_FILE)
+        if books:
+            save_to_csv(books, OUTPUT_FILE)
+        else:
+            print("No books were scraped. CSV file was not created.")
     else:
-        print("No books were scraped. CSV file was not created.")
+        print("Scraping stopped because permission could not be verified.")  
